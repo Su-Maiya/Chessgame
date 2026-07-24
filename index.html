@@ -1,11 +1,277 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Chessgame</h1>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Chess - Next generation online chess platform. Play, learn, and analyze chess." />
+    <title>Chess — Play, Learn, Analyze</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+  </head>
+  <body class="dark">
+    <div id="loading-screen" class="loading-screen">
+      <div class="loader">
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="60"/>
+        </svg>
+      </div>
+      <div class="loading-text">Chess — Loading experience...</div>
+    </div>
+
+    <header class="nav-sticky">
+      <nav class="nav container">
+        <div class="brand">
+          <button id="menu-toggle" class="hamburger" aria-label="Open menu">☰</button>
+          <a class="logo" href="#">Chess</a>
+        </div>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#play">Play</a></li>
+          <li><a href="#learn">Learn</a></li>
+          <li><a href="#puzzles">Puzzles</a></li>
+          <li><a href="#tournaments">Tournaments</a></li>
+          <li><a href="#analysis">Analysis</a></li>
+          <li><a href="#community">Community</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="#leaderboard">Leaderboard</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button id="search-btn" class="icon-btn" aria-label="Search">🔍</button>
+          <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+          <a class="btn ghost" href="#login">Login</a>
+          <a class="btn primary" href="#register">Register</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="hero container">
+        <div class="hero-left">
+          <h1 class="hero-title">Play Chess Like Never Before.</h1>
+          <p class="hero-sub">Challenge players worldwide, solve puzzles, improve your skills, and experience next-generation online chess.</p>
+          <div class="hero-cta">
+            <button class="btn primary" id="play-now">Play Now</button>
+            <button class="btn ghost" id="learn-btn">Learn Chess</button>
+            <button class="btn outline" id="tourney-btn">Join Tournament</button>
+          </div>
+          <div class="features">
+            <div class="feature">Live Play</div>
+            <div class="feature">AI Opponents</div>
+            <div class="feature">Puzzles & Lessons</div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="board-card glass">
+            <div id="chess-app">
+              <div class="board-container">
+                <canvas id="chessboard" width="640" height="640" aria-label="Chess board"></canvas>
+                <div class="coords" aria-hidden="true"></div>
+              </div>
+              <div class="sidebar">
+                <div class="players">
+                  <div class="player white">White • <span id="white-name">You</span></div>
+                  <div class="player black">Black • <span id="black-name">AI</span></div>
+                </div>
+                <div class="clocks">
+                  <div class="clock white-clock">White: <span id="clock-white">05:00</span></div>
+                  <div class="clock black-clock">Black: <span id="clock-black">05:00</span></div>
+                </div>
+                <div class="controls">
+                  <button id="undo" class="btn small">Undo</button>
+                  <button id="redo" class="btn small">Redo</button>
+                  <button id="flip" class="btn small">Flip</button>
+                  <button id="restart" class="btn small">Restart</button>
+                </div>
+                <div class="status">Turn: <span id="turn">White</span></div>
+                <div class="captured">
+                  <div class="captured-white">White captured: <span id="captured-white"></span></div>
+                  <div class="captured-black">Black captured: <span id="captured-black"></span></div>
+                </div>
+                <div class="moves" id="move-history" aria-live="polite"></div>
+                <div class="game-controls">
+                  <label>AI difficulty: <select id="ai-difficulty"><option value="1">Beginner</option><option value="2" selected>Easy</option><option value="3">Medium</option><option value="4">Hard</option><option value="5">Expert</option></select></label>
+                  <label>Time: <select id="time-control"><option value="60">Bullet 1+0</option><option value="180" selected>Blitz 3+0</option><option value="300">Rapid 5+0</option></select></label>
+                  <div class="pgn-fen">
+                    <button id="export-pgn" class="btn small">Export PGN</button>
+                    <button id="export-fen" class="btn small">Export FEN</button>
+                    <button id="import-fen-btn" class="btn small">Import FEN</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="play" class="play-modes container">
+        <h2>Play Modes</h2>
+        <div class="cards-grid">
+          <div class="card glass">
+            <h3>Play Online</h3>
+            <p>Match with players around the world.</p>
+            <div class="card-actions"><button class="btn primary">Find Match</button></div>
+          </div>
+          <div class="card glass">
+            <h3>Play Computer</h3>
+            <p>Challenge AI at various difficulties.</p>
+            <div class="card-actions"><button class="btn primary">Play vs AI</button></div>
+          </div>
+          <div class="card glass">
+            <h3>Local Multiplayer</h3>
+            <p>Play on the same device with a friend.</p>
+            <div class="card-actions"><button class="btn primary">Start</button></div>
+          </div>
+          <div class="card glass">
+            <h3>Puzzle Rush</h3>
+            <p>Solve as many puzzles as you can.</p>
+            <div class="card-actions"><button class="btn primary">Try Puzzle Rush</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="learn" class="learn container">
+        <h2>Learn Chess</h2>
+        <div class="cards-grid">
+          <div class="card glass"><h3>Chess Basics</h3><p>Start here for fundamentals.</p></div>
+          <div class="card glass"><h3>Opening Principles</h3><p>Master the first moves.</p></div>
+          <div class="card glass"><h3>Middlegame</h3><p>Tactics & strategy.</p></div>
+          <div class="card glass"><h3>Endgame</h3><p>Convert advantages to wins.</p></div>
+        </div>
+      </section>
+
+      <section id="puzzles" class="puzzles container">
+        <h2>Daily Puzzle</h2>
+        <div class="puzzle-card glass">
+          <div class="puzzle-board">
+            <canvas id="puzzle-board" width="320" height="320"></canvas>
+          </div>
+          <div class="puzzle-controls">
+            <div class="puzzle-meta">Rating: <strong>1500</strong></div>
+            <div class="puzzle-actions"><button class="btn primary">Hint</button><button class="btn ghost">Show Solution</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tournaments" class="tournaments container">
+        <h2>Upcoming Tournaments</h2>
+        <div class="cards-grid">
+          <div class="card glass">
+            <h3>City Blitz</h3>
+            <p>Starts: Jul 30 • 60 players</p>
+            <div class="card-actions"><button class="btn primary">Join</button></div>
+          </div>
+          <div class="card glass">
+            <h3>Rapid Open</h3>
+            <p>Starts: Aug 5 • 120 players</p>
+            <div class="card-actions"><button class="btn primary">Join</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="analysis" class="analysis container">
+        <h2>Analysis Board</h2>
+        <div class="analysis-grid">
+          <div class="card glass large" id="analysis-board">
+            <canvas id="analysis-canvas" width="480" height="480"></canvas>
+          </div>
+          <div class="card glass sidebar">
+            <h3>Engine</h3>
+            <div class="engine-lines" id="engine-lines"></div>
+            <div class="eval">Evaluation: <span id="eval">0.00</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="community" class="community container">
+        <h2>Community</h2>
+        <div class="cards-grid">
+          <div class="card glass">Forums</div>
+          <div class="card glass">Clubs</div>
+          <div class="card glass">Teams</div>
+        </div>
+      </section>
+
+      <section id="blog" class="blog container">
+        <h2>From Our Blog</h2>
+        <div class="cards-grid">
+          <article class="card glass">
+            <h3>Grandmaster Insights</h3>
+            <p>Learn from top players.</p>
+          </article>
+          <article class="card glass">
+            <h3>Training Tips</h3>
+            <p>Improve your rating fast.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="contact" class="contact container">
+        <h2>Contact</h2>
+        <div class="contact-grid">
+          <form id="contact-form" class="card glass contact-form" novalidate>
+            <label>Name <input type="text" name="name" required></label>
+            <label>Email <input type="email" name="email" required></label>
+            <label>Message <textarea name="message" rows="4" required></textarea></label>
+            <div class="form-actions"><button class="btn primary" type="submit">Send</button></div>
+          </form>
+          <div class="card glass contact-info">
+            <p>Email: hello@chess.example</p>
+            <p>Phone: +1 555 123 4567</p>
+            <p>Address: 123 Chess Ave, Game City</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div class="brand-col">
+          <div class="logo">Chess</div>
+          <p>Next-generation online chess.</p>
+        </div>
+        <div class="links-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#play">Play</a></li>
+            <li><a href="#learn">Learn</a></li>
+            <li><a href="#tournaments">Tournaments</a></li>
+            <li><a href="#community">Community</a></li>
+          </ul>
+        </div>
+        <div class="newsletter-col">
+          <h4>Newsletter</h4>
+          <form id="newsletter" class="newsletter" novalidate>
+            <input type="email" placeholder="Your email" required>
+            <button class="btn primary" type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="container copyright">© <span id="year">2026</span> Chess. All rights reserved.</div>
+    </footer>
+
+    <button id="scroll-top" class="scroll-top" aria-label="Scroll to top">↑</button>
+    <!-- Promotion modal -->
+    <div id="promotion-modal" class="promotion-modal" aria-hidden="true">
+      <div class="promo-card glass">
+        <h4>Choose Promotion</h4>
+        <div class="promo-options">
+          <button class="promo-piece" data-piece="q">Queen</button>
+          <button class="promo-piece" data-piece="r">Rook</button>
+          <button class="promo-piece" data-piece="b">Bishop</button>
+          <button class="promo-piece" data-piece="n">Knight</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/chess.js" defer></script>
+    <script src="js/board.js" defer></script>
+    <script src="js/ai.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </body>
 </html>
